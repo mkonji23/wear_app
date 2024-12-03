@@ -98,12 +98,9 @@ class MainTileService : SuspendingTileService() {
         val sharedData = sharedHandler.getTileData();
         Log.d("tileRequest", "Last Clickable ID: $lastClickableId")
         Log.d("tileRequest", "Updated Data: $updateData")
-
         // 타일 갱신이 필요한 경우
-        if (lastClickableId == "refresh") {
-            mySender.sendBroadcastRequest(this,"MY_BUS_WATCH")
-            Log.d("tileRequest", "Data after refresh: $updateData")
-        }
+        mySender.sendBroadcastRequest(this,"MY_BUS_WATCH")
+        Log.d("tileRequest", "Data after refresh: $updateData")
 
         val multiTileTimeline = TimelineBuilders.Timeline.fromLayoutElement(
             when (requestParams.currentState.lastClickableId) {

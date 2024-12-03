@@ -71,4 +71,5 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("androidx.wear.tiles:tiles:1.1.0")
     implementation("androidx.wear.tiles:tiles-material:1.1.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 }

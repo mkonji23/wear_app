@@ -29,6 +29,8 @@ class DataSenderToApp(context: Context) {
             Log.d("DataSenderToApp", "Data sent successfully")
         }.addOnFailureListener { e ->
             Log.e("DataSenderToApp", "Failed to send data", e)
+        }.addOnCompleteListener{
+            Log.d("DataSenderToApp", "Data sent Complete")
         }
     }
 }

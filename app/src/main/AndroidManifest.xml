@@ -60,8 +60,9 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:taskAffinity=""
-            android:theme="@style/MainActivityTheme.Starting">
+            android:theme="@style/MainActivityTheme.Starting"
+            android:launchMode="singleTask"
+            android:taskAffinity="">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
