@@ -16,6 +16,7 @@ class MyAdapter(private val items: List<busParcel>) : RecyclerView.Adapter<MyAda
         val busName: TextView = itemView.findViewById(R.id.busName)
         val busStopName : TextView  = itemView.findViewById(R.id.busStopName)
         val busArrivalTime: TextView = itemView.findViewById(R.id.busArrivalTime)
+        val direction :TextView = itemView.findViewById(R.id.direction)
     }
 
     // item_view.xml을 inflate하여 ViewHolder를 생성
@@ -31,6 +32,7 @@ class MyAdapter(private val items: List<busParcel>) : RecyclerView.Adapter<MyAda
         holder.busName.text = item.busNm
         holder.busStopName.text = item.stationNm
         holder.busArrivalTime.text = item.arrivalTime
+        holder.direction.text = if(item.stationNm === "경성고교입구") "집으로!" else "학원으로ㅠ"
     }
 
     override fun getItemCount(): Int = items.size

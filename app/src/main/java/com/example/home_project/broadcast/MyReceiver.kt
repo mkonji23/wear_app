@@ -15,13 +15,14 @@ import com.example.home_project.sharedPreference.SharedHandler
 import com.example.home_project.tile.MainTileService
 
 class MyReceiver : BroadcastReceiver() {
-
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onReceive(context: Context, intent: Intent) {
         val sharedHandler = SharedHandler(context)
         val data = intent.getParcelableExtra("data",busParcel::class.java)
-        if (data != null) {
-            sharedHandler.setTileData(data)
+        if(intent.action === "MY_ACTION_TILE" || intent.action === "MY_ACTION_WATCH"){
+            if (data != null) {
+                sharedHandler.setTileData(data)
+            }
         }
         // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
         StringBuilder().apply {

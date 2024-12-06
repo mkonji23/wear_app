@@ -36,7 +36,7 @@ import com.google.android.horologist.compose.tools.buildDeviceParameters
 import com.google.android.horologist.tiles.SuspendingTileService
 import com.google.gson.Gson
 
-private var RESOURCES_VERSION = 1
+private var RESOURCES_VERSION = 0
 
 /**
  * Skeleton for a tile with no images.
@@ -45,13 +45,14 @@ private var RESOURCES_VERSION = 1
 class MainTileService : SuspendingTileService() {
     private val myRceiver = MyReceiver()
     private val mySender = BroadCastSender()
-    private val updateData = "test"
     private val sharedHandler = SharedHandler(this)
 
     override fun onTileAddEvent(requestParams: EventBuilders.TileAddEvent) {
         super.onTileAddEvent(requestParams)
         // 동적으로 BroadcastReceiver 등록
-        val intentFilter = IntentFilter("MY_ACTION")
+        val intentFilter = IntentFilter()
+        intentFilter.addAction("MY_ACTION_TILE")
+        intentFilter.addAction("MY_ACTION_WATCH")
         registerReceiver(myRceiver, intentFilter)
         Log.d("MainTileService", "Receiver registered")
 
@@ -86,21 +87,24 @@ class MainTileService : SuspendingTileService() {
 
     override fun onTileEnterEvent(requestParams: EventBuilders.TileEnterEvent) {
         super.onTileEnterEvent(requestParams)
-        // 진입시 화면 업데이트
+        // 타일 갱신이 필요한 경우 - 워치앱에 브로드캐스트 요청
+        mySender.sendBroadcastRequest(this,"MY_ACTION_WATCH")
+        updateTile();
+    }
+    
+    
+    // 타일 업데이트 이벤트
+    fun updateTile() {
+        RESOURCES_VERSION++
         getUpdater(this).requestUpdate(MainTileService::class.java)
     }
 
     override suspend fun tileRequest(
         requestParams: RequestBuilders.TileRequest
     ): TileBuilders.Tile {
-        RESOURCES_VERSION++
         val lastClickableId = requestParams.currentState.lastClickableId
         val sharedData = sharedHandler.getTileData();
         Log.d("tileRequest", "Last Clickable ID: $lastClickableId")
-        Log.d("tileRequest", "Updated Data: $updateData")
-        // 타일 갱신이 필요한 경우
-        mySender.sendBroadcastRequest(this,"MY_BUS_WATCH")
-        Log.d("tileRequest", "Data after refresh: $updateData")
 
         val multiTileTimeline = TimelineBuilders.Timeline.fromLayoutElement(
             when (requestParams.currentState.lastClickableId) {
