@@ -122,7 +122,11 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
             saveTileData(arrmsg1)
         }
         // 타일로 데이터 전송
-        val busData = busParcel(rtNm ?: "", stNm1 ?: "", arrmsg1 ?: "");
+        var busData = busParcel(rtNm ?: "", stNm1 ?: "", arrmsg1 ?: "");
+        // 시간따라 세팅
+        if (isTimeBetween9AMAnd2PM()) {
+            busData = busParcel(rtNm ?: "", stNm2 ?: "", arrmsg1_2 ?: "");
+        }
         broadSender.sendBroadcastRequest(this, "MY_ACTION_TILE", busData);
     }
 

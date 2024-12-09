@@ -42,6 +42,9 @@ import com.google.android.horologist.compose.tools.buildDeviceParameters
 import com.google.android.horologist.tiles.SuspendingTileService
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 private var RESOURCES_VERSION = 0
 
@@ -51,7 +54,8 @@ private var RESOURCES_VERSION = 0
 @OptIn(ExperimentalHorologistApi::class)
 class MainTileService : SuspendingTileService(), BusStationDataListener {
     private val myRceiver = MyReceiver()
-    private val mySender = BroadCastSender()
+
+    //    private val mySender = BroadCastSender()
     private val sharedHandler = SharedHandler(this)
     private lateinit var dataSender: DataSenderToApp
     private lateinit var dataChangeHandler: DataChangeHandler
@@ -91,16 +95,6 @@ class MainTileService : SuspendingTileService(), BusStationDataListener {
         requestParams: RequestBuilders.ResourcesRequest
     ): ResourceBuilders.Resources {
         return ResourceBuilders.Resources.Builder().setVersion(RESOURCES_VERSION.toString())
-            .addIdToImageMapping(
-                "tree", // 리소스 ID
-                ResourceBuilders.ImageResource.Builder()
-                    .setAndroidResourceByResId(
-                        ResourceBuilders.AndroidImageResourceByResId.Builder()
-                            .setResourceId(R.drawable.tree)
-                            .build()
-                    )
-                    .build()
-            )
             .build()
     }
 
@@ -126,9 +120,9 @@ class MainTileService : SuspendingTileService(), BusStationDataListener {
         requestParams: RequestBuilders.TileRequest
     ): TileBuilders.Tile {
         val lastClickableId = requestParams.currentState.lastClickableId
-        if (lastClickableId == "refreshId") {
-            dataSender.requestData();
-        }
+//        if (lastClickableId == "refreshId") {
+//            dataSender.requestData();
+//        }
         val sharedData = sharedHandler.getTileData();
         Log.d("tileRequest", "sharedData: $sharedData")
 
@@ -154,13 +148,35 @@ class MainTileService : SuspendingTileService(), BusStationDataListener {
         val arrmsg1 = firstStation?.get("arrmsg1")?.asString ?: ""
         val stNm2 = secondStation?.get("stNm")?.asString ?: ""
         val arrmsg1_2 = secondStation?.get("arrmsg1")?.asString ?: ""
-        val busData = busParcel(rtNm ?: "", stNm1 ?: "", arrmsg1 ?: "");
+
+        var busData = busParcel(rtNm ?: "", stNm1 ?: "", arrmsg1 ?: "");
+        // 시간따라 세팅
+        if (isTimeBetween9AMAnd2PM()) {
+            busData = busParcel(rtNm ?: "", stNm2 ?: "", arrmsg1_2 ?: "");
+        }
         sharedHandler.setTileData(busData)
         updateTile();
     }
 
     override fun onBusStationDataSend() {
         Log.d("MainTileService", "onBusStationDataSend")
+    }
+
+    // 시간 체크
+    private fun isTimeBetween9AMAnd2PM(): Boolean {
+        // 주어진 시간 문자열을 ZonedDateTime으로 변환하고 한국 시간(Asia/Seoul)으로 변환
+        val zonedDateTime = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Asia/Seoul"))
+        val parcelTime = zonedDateTime.toLocalTime()
+
+        // 오전 9시부터 오후 2시 사이인지 확인
+        val startTime = LocalTime.of(9, 0)  // 오전 9시
+        val endTime = LocalTime.of(14, 0)   // 오후 2시
+
+        return parcelTime.isAfter(startTime.minusSeconds(1)) && parcelTime.isBefore(
+            endTime.plusSeconds(
+                1
+            )
+        )
     }
 }
 
