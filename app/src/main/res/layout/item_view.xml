@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:layout_marginBottom="18dp"
+    android:layout_marginBottom="50dp"
     >
     <TextView
         android:id="@+id/direction"
@@ -13,7 +13,6 @@
         android:gravity="center"
         android:text="집으로"
         android:textColor="@android:color/holo_orange_dark"
-        android:layout_marginBottom="8dp"
         android:textSize="18sp" />
 
     <TextView
@@ -23,6 +22,7 @@
         android:gravity="center"
         android:text="정류장: 없음"
         android:textColor="@android:color/white"
+        android:layout_marginBottom="10dp"
         android:textSize="18sp" />
 
     <TextView
@@ -32,6 +32,7 @@
         android:gravity="center"
         android:text="다음 버스: 대기"
         android:textColor="@android:color/holo_blue_light"
+        android:layout_marginBottom="10dp"
         android:textSize="20sp" />
 
     <TextView

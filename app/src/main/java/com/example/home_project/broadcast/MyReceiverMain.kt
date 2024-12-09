@@ -15,27 +15,23 @@ import com.example.home_project.parcel.busParcel
 import com.example.home_project.sharedPreference.SharedHandler
 import com.example.home_project.tile.MainTileService
 
-class MyReceiver : BroadcastReceiver() {
+class MyReceiverMain : BroadcastReceiver() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onReceive(context: Context, intent: Intent) {
         val sharedHandler = SharedHandler(context)
         val data = intent.getParcelableExtra("data", busParcel::class.java)
-        if (intent.action == "MY_ACTION_TILE") { // 타일 데이터 받아옴
-            if (data != null) {
-                sharedHandler.setTileData(data)
-                if (context is MainTileService) {
-                    Log.d("MyReceiver", "MY_ACTION_TILE updateTile")
-                    context.updateTile()
+        if (intent.action == "MY_ACTION_WATCH2") {
+            // 메인 스레드에서 MainActivity의 메서드를 호출
+            if (context is MainActivity) {
+                context.runOnUiThread {
+                    // MainActivity에서 데이터 요청
+                    context.reqData()
                 }
             }
-        } else if (intent.action == "MY_ACTION_WATCH" && context is MainTileService) {
-            Log.d("MyReceiver", "MY_ACTION_WATCH2 sendBroadcast")
-            // MY_ACTION_WATCH로 데이터 전달
-            val newIntent = Intent("MY_ACTION_WATCH2")
-            context.sendBroadcast(newIntent)
         }
         // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
         StringBuilder().apply {
+            append("location: MyReceiverMain\n")
             append("Action: ${intent.action}\n")
             append("URI: ${intent.toUri(Intent.URI_INTENT_SCHEME)}\n")
             append("DATA: ${data}\n")

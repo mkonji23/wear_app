@@ -7,26 +7,41 @@
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.google.android.gms.permission.WEARABLE" />
     <uses-permission android:name="android.permission.BIND_WEARABLE_LISTENER_SERVICE" />
-    <uses-permission android:name="android.permission.BIND_TILE_PROVIDER" />
     <uses-permission android:name="com.example.permission.ACCESS_BROADCAST" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
-    <uses-permission android:name="com.google.android.wearable.permission.RECEIVE_COMPLICATION_DATA" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/love"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/love"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault">
-        <receiver android:name=".broadcast.MyReceiver" android:enabled="true" android:exported="true">
+        <!-- 워치앱 메타데이터 설정 -->
+        <meta-data
+            android:name="com.google.android.wearable.api.metadata.WATCHFACE"
+            android:resource="@drawable/love" />  <!-- 워치앱 아이콘 설정 -->
+        <receiver
+            android:name=".broadcast.MyReceiver"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_ACTION_TILE" />
+                <action android:name="android.intent.action.MY_ACTION_WATCH" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".broadcast.MyReceiverMain"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MY_ACTION_WATCH2" />
+                <action android:name="android.intent.action.MY_ACTION_TILE" />
             </intent-filter>
         </receiver>
 
@@ -42,7 +57,7 @@
 
             <meta-data
                 android:name="androidx.wear.tiles.PREVIEW"
-                android:resource="@drawable/tree" />
+                android:resource="@drawable/tile_preview_main" />
         </service>
 
         <uses-library
@@ -64,7 +79,6 @@
             android:taskAffinity="">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

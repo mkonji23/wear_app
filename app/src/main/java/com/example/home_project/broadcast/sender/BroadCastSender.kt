@@ -7,10 +7,12 @@ import com.example.home_project.parcel.busParcel
 
 
 class BroadCastSender {
-    fun sendBroadcastRequest(context: Context, action:String, params: busParcel? = null) {
+    fun sendBroadcastRequest(context: Context, action: String, params: busParcel? = null) {
         val intent = Intent()
         intent.action = (action)
-        intent.setClassName(context,"com.example.home_project.broadcast.MyReceiver")
+        intent.setClassName(context, "com.example.home_project.broadcast.MyReceiver")
+        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
+        intent.setPackage("com.example.home_project")
         intent.putExtra("data", params)
         context.sendBroadcast(intent)
         Log.d("MainTileService", "Broadcast sent with action $action")

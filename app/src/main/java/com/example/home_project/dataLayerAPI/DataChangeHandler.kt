@@ -3,7 +3,9 @@ package com.example.home_project.dataLayerAPI
 import android.content.Context
 import android.util.Log
 import com.example.home_project.DataInterface.BusStationDataListener
+import com.example.home_project.MainActivity
 import com.example.home_project.contant.DataConstant
+import com.example.home_project.tile.MainTileService
 import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
@@ -15,9 +17,14 @@ import com.google.gson.JsonParser
 // 데이터 변경 감지
 class DataChangeHandler(private val context: Context) : DataClient.OnDataChangedListener {
     private var listener: BusStationDataListener? = null
+    private var listenerTile: BusStationDataListener? = null
 
-    fun setBusStationDataListener(listener: BusStationDataListener) {
+    fun setBusStationDataListener(listener: MainActivity) {
         this.listener = listener
+    }
+
+    fun setBusStationDataTileListener(listener: MainTileService) {
+        this.listenerTile = listener
     }
 
     override fun onDataChanged(dataEvents: DataEventBuffer) {
@@ -48,5 +55,7 @@ class DataChangeHandler(private val context: Context) : DataClient.OnDataChanged
         Log.d("DataChangeHandler", "Bus station updated: $jsonString")
         // 데이터 전달
         listener?.onBusStationDataReceived(jsonObject)
+        // 타일에 전달
+        listenerTile?.onBusStationDataReceived(jsonObject)
     }
 }

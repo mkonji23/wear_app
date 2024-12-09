@@ -2,6 +2,8 @@ package com.example.home_project.tile
 
 import android.content.Context
 import android.content.IntentFilter
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -23,11 +25,15 @@ import androidx.wear.protolayout.material.layouts.PrimaryLayout
 import androidx.wear.tiles.EventBuilders
 import androidx.wear.tiles.RequestBuilders
 import androidx.wear.tiles.TileBuilders
+import com.example.home_project.DataInterface.BusStationDataListener
 import com.example.home_project.broadcast.MyReceiver
 import com.example.home_project.R
 import com.example.home_project.broadcast.sender.BroadCastSender
+import com.example.home_project.dataLayerAPI.DataChangeHandler
+import com.example.home_project.dataLayerAPI.DataSenderToApp
 import com.example.home_project.parcel.busParcel
 import com.example.home_project.sharedPreference.SharedHandler
+import com.google.android.gms.wearable.Wearable
 
 
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
@@ -35,6 +41,7 @@ import com.google.android.horologist.compose.tools.LayoutRootPreview
 import com.google.android.horologist.compose.tools.buildDeviceParameters
 import com.google.android.horologist.tiles.SuspendingTileService
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 
 private var RESOURCES_VERSION = 0
 
@@ -42,10 +49,26 @@ private var RESOURCES_VERSION = 0
  * Skeleton for a tile with no images.
  */
 @OptIn(ExperimentalHorologistApi::class)
-class MainTileService : SuspendingTileService() {
+class MainTileService : SuspendingTileService(), BusStationDataListener {
     private val myRceiver = MyReceiver()
     private val mySender = BroadCastSender()
     private val sharedHandler = SharedHandler(this)
+    private lateinit var dataSender: DataSenderToApp
+    private lateinit var dataChangeHandler: DataChangeHandler
+    override fun onCreate() {
+        super.onCreate()
+        // DataChangeHandler 초기화
+        dataChangeHandler = DataChangeHandler(this)
+        dataChangeHandler.setBusStationDataTileListener(this)
+        // 항상 초기화
+        dataSender = DataSenderToApp(this)
+        Wearable.getDataClient(this).addListener(dataChangeHandler)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Wearable.getDataClient(this).removeListener(dataChangeHandler)
+    }
 
     override fun onTileAddEvent(requestParams: EventBuilders.TileAddEvent) {
         super.onTileAddEvent(requestParams)
@@ -87,12 +110,12 @@ class MainTileService : SuspendingTileService() {
 
     override fun onTileEnterEvent(requestParams: EventBuilders.TileEnterEvent) {
         super.onTileEnterEvent(requestParams)
-        // 타일 갱신이 필요한 경우 - 워치앱에 브로드캐스트 요청
-        mySender.sendBroadcastRequest(this,"MY_ACTION_WATCH")
-        updateTile();
+        // 타일 갱신이 필요한 경우 -  타일 -> 모바일 앱으로 요청
+        dataSender.requestData();
+//        mySender.sendBroadcastRequest(this, "MY_ACTION_WATCH")
     }
-    
-    
+
+
     // 타일 업데이트 이벤트
     fun updateTile() {
         RESOURCES_VERSION++
@@ -103,8 +126,11 @@ class MainTileService : SuspendingTileService() {
         requestParams: RequestBuilders.TileRequest
     ): TileBuilders.Tile {
         val lastClickableId = requestParams.currentState.lastClickableId
+        if (lastClickableId == "refreshId") {
+            dataSender.requestData();
+        }
         val sharedData = sharedHandler.getTileData();
-        Log.d("tileRequest", "Last Clickable ID: $lastClickableId")
+        Log.d("tileRequest", "sharedData: $sharedData")
 
         val multiTileTimeline = TimelineBuilders.Timeline.fromLayoutElement(
             when (requestParams.currentState.lastClickableId) {
@@ -115,11 +141,33 @@ class MainTileService : SuspendingTileService() {
         return TileBuilders.Tile.Builder()
             .setResourcesVersion(RESOURCES_VERSION.toString())  // 고유 버전 생성
             .setTileTimeline(multiTileTimeline)
+            .setFreshnessIntervalMillis(60000) // 1분마다 갱신
             .build()
+    }
+
+    override fun onBusStationDataReceived(jsonObject: JsonObject) {
+        Log.d("onBusStationDataReceived", "onBusStationDataReceived: $jsonObject")
+        val firstStation = jsonObject["firstStation"]?.asJsonObject;
+        val secondStation = jsonObject["secondStation"]?.asJsonObject;
+        val rtNm = firstStation?.get("rtNm")?.asString ?: "데이터 미전송"
+        val stNm1 = firstStation?.get("stNm")?.asString ?: ""
+        val arrmsg1 = firstStation?.get("arrmsg1")?.asString ?: ""
+        val stNm2 = secondStation?.get("stNm")?.asString ?: ""
+        val arrmsg1_2 = secondStation?.get("arrmsg1")?.asString ?: ""
+        val busData = busParcel(rtNm ?: "", stNm1 ?: "", arrmsg1 ?: "");
+        sharedHandler.setTileData(busData)
+        updateTile();
+    }
+
+    override fun onBusStationDataSend() {
+        Log.d("MainTileService", "onBusStationDataSend")
     }
 }
 
-private fun tileLayout(context: Context, updateData: String = ""): LayoutElementBuilders.LayoutElement {
+private fun tileLayout(
+    context: Context,
+    updateData: String = ""
+): LayoutElementBuilders.LayoutElement {
     val myData = Gson().fromJson(updateData, busParcel::class.java)
     val busStopName = Text.Builder(context, myData.stationNm)
         .setColor(argb(Colors.DEFAULT.onSurface))
@@ -140,19 +188,21 @@ private fun tileLayout(context: Context, updateData: String = ""): LayoutElement
         .build()
 
 //
-    val buttonTest =  Button.Builder(context, ModifiersBuilders.Clickable.Builder()
-        .setId("refresh")
-        .setOnClick(
-            ActionBuilders.LoadAction.Builder()
-                .setRequestState(
-                    StateBuilders.State.Builder()
-                        .addIdToValueMapping(
-                            "busArrivalTime",
-                            StateEntryBuilders.StateEntryValue.fromString(updateData)
-                        )
-                        .build()
-                ).build()
-        ).build())
+    val buttonTest = Button.Builder(
+        context, ModifiersBuilders.Clickable.Builder()
+            .setId("refresh")
+            .setOnClick(
+                ActionBuilders.LoadAction.Builder()
+                    .setRequestState(
+                        StateBuilders.State.Builder()
+                            .addIdToValueMapping(
+                                "refreshId",
+                                StateEntryBuilders.StateEntryValue.fromString("")
+                            )
+                            .build()
+                    ).build()
+            ).build()
+    )
         .setTextContent("refresh")
         .build()
 
@@ -194,7 +244,6 @@ private fun tileLayout(context: Context, updateData: String = ""): LayoutElement
         )
         .build()
 }
-
 
 
 @Preview(

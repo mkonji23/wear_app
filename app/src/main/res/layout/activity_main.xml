@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.wear.widget.BoxInsetLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    tools:ignore="ExtraText">
 
     <!-- 둥근 경로에 따라 시간을 표시 -->
     <androidx.wear.widget.CurvedTextView
@@ -14,7 +15,15 @@
         android:textSize="16sp"
         android:textColor="@android:color/white"
         android:gravity="center" />
+    <!--    메인 워치 화면-->
+    <androidx.wear.widget.WearableRecyclerView
+        android:id="@+id/recycler_launcher_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="40dp"
+        android:scrollbars="vertical" />
 
+    <!-- 새로고침 버튼-->
     <ImageButton
         android:id="@+id/refreshButton"
         android:layout_width="48dp"
@@ -25,21 +34,22 @@
         android:contentDescription="새로고침"
         android:src="@drawable/sync_24px"
         android:visibility="visible"
-        />
-    <androidx.wear.widget.WearableRecyclerView
-        android:id="@+id/recycler_launcher_view"
+    />
+    <!--     반투명 배경 및 ProgressBar -->
+    <FrameLayout
+        android:id="@+id/loadingOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="40dp"
-        android:scrollbars="vertical" />
-
+        android:visibility="gone"
+        android:background="#80000000"
+        android:gravity="center">
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:gravity="center"
         style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:indeterminate="true"
+        android:id="@+id/progressBar"
+        android:layout_gravity="center"
         android:theme="@style/Widget.AppCompat.ProgressBar"
-        android:visibility="gone"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    </FrameLayout>
 </androidx.wear.widget.BoxInsetLayout>
