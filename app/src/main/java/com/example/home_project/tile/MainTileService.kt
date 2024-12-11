@@ -187,19 +187,19 @@ private fun tileLayout(
     val myData = Gson().fromJson(updateData, busParcel::class.java)
     val busStopName = Text.Builder(context, myData.stationNm)
         .setColor(argb(Colors.DEFAULT.onSurface))
-        .setTypography(Typography.TYPOGRAPHY_CAPTION1)
+        .setTypography(Typography.TYPOGRAPHY_BODY1)
         .setMultilineAlignment(LayoutElementBuilders.TEXT_ALIGN_CENTER)
         .build()
 
     val busArrivalTime = Text.Builder(context, myData.arrivalTime)
         .setColor(argb(Colors.DEFAULT.primary))
-        .setTypography(Typography.TYPOGRAPHY_BODY2)
+        .setTypography(Typography.TYPOGRAPHY_TITLE2)
         .setMultilineAlignment(LayoutElementBuilders.TEXT_ALIGN_CENTER)
         .build()
 
     val busName = Text.Builder(context, myData.busNm)
         .setColor(argb(Colors.DEFAULT.onSurface))
-        .setTypography(Typography.TYPOGRAPHY_CAPTION2)
+        .setTypography(Typography.TYPOGRAPHY_BODY1)
         .setMultilineAlignment(LayoutElementBuilders.TEXT_ALIGN_CENTER)
         .build()
 

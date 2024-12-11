@@ -38,6 +38,8 @@ import java.util.Date
 import java.util.Locale
 import java.util.Timer
 import java.util.TimerTask
+import android.view.MotionEvent
+import androidx.wear.widget.WearableLinearLayoutManager
 
 class MainActivity : ComponentActivity(), BusStationDataListener {
     private lateinit var dataChangeHandler: DataChangeHandler
@@ -45,6 +47,7 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
     private var broadSender: BroadCastSender = BroadCastSender()
     private val myRceiver = MyReceiverMain()
     private var initTxt = "yet"
+    private lateinit var recyclerView: WearableRecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
@@ -68,6 +71,21 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
         } finally {
             renderInit()
         }
+    }
+
+    override fun onGenericMotionEvent(event: MotionEvent?): Boolean {
+        if (event != null && event.action == MotionEvent.ACTION_SCROLL) {
+            // Rotary 이벤트 감지
+            val rotaryDelta = event.getAxisValue(MotionEvent.AXIS_SCROLL)
+            Log.e("onGenericMotionEvent", rotaryDelta.toString())
+            if (rotaryDelta != 0f) {
+                // 스크롤 처리
+                recyclerView.scrollBy(0, -(rotaryDelta * 500).toInt())
+                return true
+            }
+
+        }
+        return super.onGenericMotionEvent(event)
     }
 
     override fun onDestroy() {
@@ -114,8 +132,6 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
         if (isTimeBetween9AMAnd2PM()) {
             items = items.reversed();
         }
-        val recyclerView = findViewById<WearableRecyclerView>(R.id.recycler_launcher_view)
-        recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = MyAdapter(items)
 
         if (arrmsg1 != null) {
@@ -142,7 +158,7 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
     }
 
     private fun saveTileData(data: String) {
-        val prefs = getSharedPreferences("TileData", Context.MODE_PRIVATE)
+        val prefs = getSharedPreferences("TileData", MODE_PRIVATE)
         prefs.edit().putString("busArrivalTime", data).apply()
     }
 
@@ -157,8 +173,11 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
         val items = listOf(
             busParcel("", "불러오는중...", "으앙"),
         )
-        val recyclerView = findViewById<WearableRecyclerView>(R.id.recycler_launcher_view)
+        recyclerView = findViewById<WearableRecyclerView>(R.id.recycler_launcher_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
+        // 스크롤할 때 리스트의 첫 번째 및 마지막 아이템을 화면 중앙에 정렬 여부
+        recyclerView.isEdgeItemsCenteringEnabled = true
+//        recyclerView.isCircularScrollingGestureEnabled = true
         recyclerView.adapter = MyAdapter(items)
 
         // CurvedTextView 시간 설정
