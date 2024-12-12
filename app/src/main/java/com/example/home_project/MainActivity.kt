@@ -39,6 +39,7 @@ import java.util.Locale
 import java.util.Timer
 import java.util.TimerTask
 import android.view.MotionEvent
+import android.widget.Toast
 import androidx.wear.widget.WearableLinearLayoutManager
 
 class MainActivity : ComponentActivity(), BusStationDataListener {
@@ -152,7 +153,7 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
             showLoading(false)
             if (initTxt === "yet") {
                 reqData();
-                initTxt = "send"
+                initTxt = "send1"
             }
         }, 10000) //
     }
@@ -202,6 +203,7 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
             dataSender.requestData();
         } catch (err: Exception) {
             showLoading(false)
+            Toast.makeText(this, "데이터 조회에 실패했습니다.", Toast.LENGTH_SHORT).show()
         }
     }
 

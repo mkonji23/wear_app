@@ -19,6 +19,7 @@ class DataSenderToApp(context: Context) {
     fun setBusStationDataListener(listener: BusStationDataListener) {
         this.listener = listener
     }
+
     fun requestData() {
         val putDataReq: PutDataRequest = PutDataMapRequest.create("/getStationInfo").run {
             dataMap.putInt(DataConstant.WEAR_KEY, count++)
@@ -26,13 +27,13 @@ class DataSenderToApp(context: Context) {
 
             asPutDataRequest()
         }
-        Log.d("DataSenderToApp",count.toString())
+        Log.d("DataSenderToApp", count.toString())
         val putDataTask: Task<DataItem> = dataClient.putDataItem(putDataReq)
         putDataTask.addOnSuccessListener {
             Log.d("DataSenderToApp", "Data sent successfully")
         }.addOnFailureListener { e ->
             Log.e("DataSenderToApp", "Failed to send data", e)
-        }.addOnCompleteListener{
+        }.addOnCompleteListener {
             Log.d("DataSenderToApp", "Data sent Complete")
             listener?.onBusStationDataSend();
         }
