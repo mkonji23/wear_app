@@ -87,8 +87,13 @@ class MainTileService : SuspendingTileService(), BusStationDataListener {
 
     override fun onTileRemoveEvent(requestParams: EventBuilders.TileRemoveEvent) {
         super.onTileRemoveEvent(requestParams)
-        // 등록 해제
-        unregisterReceiver(myRceiver)
+        // 리시버 등록 해제
+        try {
+            unregisterReceiver(myRceiver)
+        } catch (e: IllegalArgumentException) {
+            // 리시버가 등록되지 않았을 때의 예외 처리
+            Log.e("MainTileService", "Receiver already unregistered or not registered")
+        }
     }
 
     override suspend fun resourcesRequest(
