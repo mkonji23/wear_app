@@ -2,8 +2,6 @@ package com.example.home_project.tile
 
 import android.content.Context
 import android.content.IntentFilter
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -27,15 +25,11 @@ import androidx.wear.tiles.RequestBuilders
 import androidx.wear.tiles.TileBuilders
 import com.example.home_project.DataInterface.BusStationDataListener
 import com.example.home_project.broadcast.MyReceiver
-import com.example.home_project.R
-import com.example.home_project.broadcast.sender.BroadCastSender
 import com.example.home_project.dataLayerAPI.DataChangeHandler
 import com.example.home_project.dataLayerAPI.DataSenderToApp
 import com.example.home_project.parcel.busParcel
 import com.example.home_project.sharedPreference.SharedHandler
 import com.google.android.gms.wearable.Wearable
-
-
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.compose.tools.LayoutRootPreview
 import com.google.android.horologist.compose.tools.buildDeviceParameters
@@ -111,9 +105,7 @@ class MainTileService : SuspendingTileService(), BusStationDataListener {
         super.onTileEnterEvent(requestParams)
         // 타일 갱신이 필요한 경우 -  타일 -> 모바일 앱으로 요청
         dataSender.requestData();
-//        mySender.sendBroadcastRequest(this, "MY_ACTION_WATCH")
     }
-
 
     // 타일 업데이트 이벤트
     fun updateTile() {
@@ -125,14 +117,12 @@ class MainTileService : SuspendingTileService(), BusStationDataListener {
         requestParams: RequestBuilders.TileRequest
     ): TileBuilders.Tile {
         val lastClickableId = requestParams.currentState.lastClickableId
-//        if (lastClickableId == "refreshId") {
-//            dataSender.requestData();
-//        }
         val sharedData = sharedHandler.getTileData();
         Log.d("tileRequest", "sharedData: $sharedData")
+        Log.d("tileRequest", "lastClickableId: $lastClickableId")
 
         val multiTileTimeline = TimelineBuilders.Timeline.fromLayoutElement(
-            when (requestParams.currentState.lastClickableId) {
+            when (lastClickableId) {
                 "foo" -> tileLayout(this, sharedData)
                 else -> tileLayout(this, sharedData)
             }
@@ -140,7 +130,7 @@ class MainTileService : SuspendingTileService(), BusStationDataListener {
         return TileBuilders.Tile.Builder()
             .setResourcesVersion(RESOURCES_VERSION.toString())  // 고유 버전 생성
             .setTileTimeline(multiTileTimeline)
-            .setFreshnessIntervalMillis(60000) // 1분마다 갱신
+            .setFreshnessIntervalMillis(900_000) // 15분마다 갱신
             .build()
     }
 
@@ -184,6 +174,8 @@ class MainTileService : SuspendingTileService(), BusStationDataListener {
         )
     }
 }
+
+// 로딩 상태 레이아웃 생성 함수
 
 private fun tileLayout(
     context: Context,
@@ -258,7 +250,6 @@ private fun tileLayout(
                         .addContent(busStopName)
                         .addContent(busArrivalTime)
                         .addContent(busName)
-//                        .addContent(buttonTest)
                         .build()
                 )
                 .build()
@@ -266,9 +257,8 @@ private fun tileLayout(
         .build()
 }
 
-
 @Preview(
-    device = Devices.WEAR_OS_SMALL_ROUND,
+    device = Devices.WEAR_OS_LARGE_ROUND,
     showSystemUi = true,
     backgroundColor = 0xff000000,
     showBackground = true

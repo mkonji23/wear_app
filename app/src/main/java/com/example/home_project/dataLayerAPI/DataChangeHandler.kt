@@ -31,6 +31,7 @@ class DataChangeHandler(private val context: Context) : DataClient.OnDataChanged
         dataEvents.forEach { event ->
             if (event.type == DataEvent.TYPE_CHANGED) {
                 event.dataItem.also { item ->
+                    Log.w("DataChangeHandler", "dataEvents path: ${item.uri.path}")
                     when (item.uri.path) {
                         "/count" -> handleCountData(item)
                         "/setStationInfo" -> handleBusStationData(item)
@@ -44,7 +45,7 @@ class DataChangeHandler(private val context: Context) : DataClient.OnDataChanged
     }
 
     private fun handleCountData(item: DataItem) {
-        val count = DataMapItem.fromDataItem(item).dataMap.getInt(DataConstant.WEAR_KEY)
+        val count = DataMapItem.fromDataItem(item).dataMap.getString(DataConstant.WEAR_KEY)
         Log.d("DataChangeHandler", "Count updated: $count")
     }
 
@@ -52,6 +53,7 @@ class DataChangeHandler(private val context: Context) : DataClient.OnDataChanged
         val dataMap = DataMapItem.fromDataItem(item).dataMap
         val jsonString = dataMap.getString("arguments", "")
         val jsonObject: JsonObject = JsonParser.parseString(jsonString).asJsonObject
+        Log.d("DataChangeHandler", "Bus station Time: ${dataMap.getString(DataConstant.WEAR_KEY)}")
         Log.d("DataChangeHandler", "Bus station updated: $jsonString")
         // 데이터 전달
         listener?.onBusStationDataReceived(jsonObject)
