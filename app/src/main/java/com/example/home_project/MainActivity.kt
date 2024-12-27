@@ -40,6 +40,8 @@ import java.util.Timer
 import java.util.TimerTask
 import android.view.MotionEvent
 import android.widget.Toast
+import com.google.android.gms.tasks.Tasks
+import com.google.android.gms.wearable.MessageClient
 
 class MainActivity : ComponentActivity(), BusStationDataListener {
     private lateinit var dataChangeHandler: DataChangeHandler
@@ -157,9 +159,10 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
             }
             // 백그라운드서비스 여부 확인용
             if (!backgroundFlag) {
-                val toast = Toast.makeText(this, "백그라운드서비스 OFF!", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(this, "백그라운드서비스 OFF!\r\n모바일앱 확인!", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.BOTTOM, 0, 0) // 화면 바텅에 표시
                 toast.show()
+                sendOpenAppRequestToMobile()
             } else {
                 backgroundFlag = false
             }
@@ -243,6 +246,30 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
                 1
             )
         )
+    }
+
+    // 연결된 모바일 디바이스 ID 가져오기
+    private fun sendOpenAppRequestToMobile() {
+        val messageClient: MessageClient = Wearable.getMessageClient(this)
+        val nodeClient = Wearable.getNodeClient(this)
+        val messagePath = "/open_mobile_app"
+        val messagePayload = "Open App Request".toByteArray()
+        nodeClient.connectedNodes.addOnSuccessListener { nodes ->
+            if (nodes.isNotEmpty()) {
+                val nodeId = nodes[0].id
+                nodeId.let {
+                    messageClient.sendMessage(it, messagePath, messagePayload)
+                        .addOnSuccessListener {
+                            Log.d("WearOS", "Message sent successfully!")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("WearOS", "Failed to send message", e)
+                        }
+                }
+            } else {
+                Log.e("WearOS", "No connected nodes found.")
+            }
+        }
     }
 
 }

@@ -14,7 +14,7 @@ import com.google.android.gms.wearable.Wearable
 import java.text.SimpleDateFormat
 import kotlin.random.Random
 
-// 안드로이드 앱으로 데이터 보내는 부분
+// 안드로이드 모바일 앱으로 데이터 보내는 부분
 class DataSenderToApp(context: Context) {
     private val dataClient: DataClient = Wearable.getDataClient(context)
     private var listener: BusStationDataListener? = null
@@ -41,7 +41,6 @@ class DataSenderToApp(context: Context) {
         }.addOnCompleteListener {
             Log.d("DataSenderToApp", "Data sent Complete")
             listener?.onBusStationDataSend();
-            listener?.onBackServiceFlag(true);
         }
     }
 }
