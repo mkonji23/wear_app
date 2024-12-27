@@ -7,13 +7,13 @@
 package com.example.home_project
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.IntentFilter
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageButton
@@ -40,7 +40,6 @@ import java.util.Timer
 import java.util.TimerTask
 import android.view.MotionEvent
 import android.widget.Toast
-import androidx.wear.widget.WearableLinearLayoutManager
 
 class MainActivity : ComponentActivity(), BusStationDataListener {
     private lateinit var dataChangeHandler: DataChangeHandler
@@ -49,6 +48,7 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
     private val myRceiver = MyReceiverMain()
     private var initTxt = "yet"
     private lateinit var recyclerView: WearableRecyclerView
+    private var backgroundFlag = false;
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
@@ -155,7 +155,19 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
                 reqData();
                 initTxt = "send1"
             }
+            // 백그라운드서비스 여부 확인용
+            if (!backgroundFlag) {
+                val toast = Toast.makeText(this, "백그라운드서비스 OFF!", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.BOTTOM, 0, 0) // 화면 바텅에 표시
+                toast.show()
+            } else {
+                backgroundFlag = false
+            }
         }, 10000) //
+    }
+
+    override fun onBackServiceFlag(flag: Boolean) {
+        backgroundFlag = flag
     }
 
     private fun saveTileData(data: String) {

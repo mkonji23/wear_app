@@ -157,6 +157,10 @@ class MainTileService : SuspendingTileService(), BusStationDataListener {
         Log.d("MainTileService", "onBusStationDataSend")
     }
 
+    override fun onBackServiceFlag(flag: Boolean) {
+        Log.d("MainTileService", "onBackServiceFlag")
+    }
+
     // 시간 체크
     private fun isTimeBetween9AMAnd2PM(): Boolean {
         // 주어진 시간 문자열을 ZonedDateTime으로 변환하고 한국 시간(Asia/Seoul)으로 변환

@@ -41,6 +41,7 @@ class DataSenderToApp(context: Context) {
         }.addOnCompleteListener {
             Log.d("DataSenderToApp", "Data sent Complete")
             listener?.onBusStationDataSend();
+            listener?.onBackServiceFlag(true);
         }
     }
 }

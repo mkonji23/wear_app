@@ -6,4 +6,5 @@ interface BusStationDataListener {
     fun onBusStationDataReceived(jsonObject: JsonObject)
     fun onBusStationDataSend()
 
+    fun onBackServiceFlag(flag: Boolean)
 }

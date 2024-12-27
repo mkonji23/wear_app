@@ -35,6 +35,7 @@ class DataChangeHandler(private val context: Context) : DataClient.OnDataChanged
                     when (item.uri.path) {
                         "/count" -> handleCountData(item)
                         "/setStationInfo" -> handleBusStationData(item)
+                        "/getBackserviceFlag" -> handleBackFlag(item)
                         else -> Log.w("DataChangeHandler", "Unhandled path: ${item.uri.path}")
                     }
                 }
@@ -42,6 +43,12 @@ class DataChangeHandler(private val context: Context) : DataClient.OnDataChanged
                 Log.d("DataChangeHandler", "Data item deleted: ${event.dataItem.uri}")
             }
         }
+    }
+
+    private fun handleBackFlag(item: DataItem) {
+        val flag = DataMapItem.fromDataItem(item).dataMap.getBoolean(DataConstant.WEAR_KEY)
+        Log.d("DataChangeHandler", "handleBackFlag: $flag")
+        listener?.onBackServiceFlag(flag);
     }
 
     private fun handleCountData(item: DataItem) {
