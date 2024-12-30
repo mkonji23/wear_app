@@ -206,6 +206,12 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
         val curvedTextClock = findViewById<CurvedTextView>(R.id.curvedTextClock)
         val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
 
+        curvedTextClock.setOnClickListener {
+            showLoading(true);
+            Handler(Looper.getMainLooper()).postDelayed({
+                showLoading(false)
+            }, 3000)
+        }
         // 시간 업데이트
         val timer = Timer()
         timer.scheduleAtFixedRate(object : TimerTask() {
@@ -231,11 +237,11 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
     private var gifNum = 1
     private fun showLoading(flag: Boolean) {
         val gifImage = when (gifNum) {
-            1 -> R.drawable.norong1;
+            1 -> R.drawable.rabbit;
             2 -> R.drawable.norong2;
             3 -> R.drawable.norong3;
             4 -> R.drawable.norong4;
-            5 -> R.drawable.rabbit;
+            5 -> R.drawable.norong1;
             else -> R.drawable.norong3;
         }// 그 외의 값 처리
 
@@ -252,10 +258,6 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
             // 이미지 교체
             if (gifNum == 5) gifNum = 1 else gifNum++;
         }
-    }
-
-    private fun getImage() {
-
     }
 
     // 시간 체크
