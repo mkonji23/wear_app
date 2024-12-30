@@ -72,6 +72,7 @@ dependencies {
     // Optional: Google Play Services for common functionality
     implementation("com.google.android.gms:play-services-base:18.2.0")
     implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("androidx.wear.tiles:tiles:1.1.0")
     implementation("androidx.wear.tiles:tiles-material:1.1.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")

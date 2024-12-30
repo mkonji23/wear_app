@@ -6,7 +6,6 @@
 
 package com.example.home_project
 
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.IntentFilter
 import android.icu.text.SimpleDateFormat
@@ -14,14 +13,18 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.wear.widget.CurvedTextView
 import androidx.wear.widget.WearableRecyclerView
+import com.bumptech.glide.Glide
 import com.example.home_project.DataInterface.BusStationDataListener
 import com.example.home_project.broadcast.MyReceiverMain
 import com.example.home_project.broadcast.sender.BroadCastSender
@@ -29,6 +32,7 @@ import com.example.home_project.dataLayerAPI.DataChangeHandler
 import com.example.home_project.dataLayerAPI.DataSenderToApp
 import com.example.home_project.parcel.busParcel
 import com.example.home_project.view.MyAdapter
+import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 import com.google.gson.JsonObject
 import java.time.LocalTime
@@ -38,11 +42,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.Timer
 import java.util.TimerTask
-import android.view.MotionEvent
-import android.widget.ImageView
-import android.widget.Toast
-import com.bumptech.glide.Glide
-import com.google.android.gms.wearable.MessageClient
+import kotlin.random.Random
 
 class MainActivity : ComponentActivity(), BusStationDataListener {
     private lateinit var dataChangeHandler: DataChangeHandler
@@ -141,7 +141,12 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
         if (isTimeBetween9AMAnd2PM()) {
             items = items.reversed();
         }
-        recyclerView.adapter = MyAdapter(items)
+        recyclerView.adapter = MyAdapter(items) {
+            showLoading(true);
+            Handler(Looper.getMainLooper()).postDelayed({
+                showLoading(false)
+            }, 3000)
+        }
 
         if (arrmsg1 != null) {
             saveTileData(arrmsg1)
@@ -162,15 +167,18 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
             if (initTxt === "yet") {
                 reqData();
                 initTxt = "send1"
-            }
-            // 백그라운드서비스 여부 확인용
-            if (!backgroundFlag) {
-                val toast = Toast.makeText(this, "백그라운드서비스 OFF!\r\n모바일앱 확인!", Toast.LENGTH_SHORT)
-                toast.show()
-                sendOpenAppRequestToMobile()
             } else {
-                backgroundFlag = false
+                // 백그라운드서비스 여부 확인용
+                if (!backgroundFlag) {
+                    val toast =
+                        Toast.makeText(this, "백그라운드서비스 OFF!\r\n모바일앱 확인!", Toast.LENGTH_SHORT)
+                    toast.show()
+                    sendOpenAppRequestToMobile()
+                } else {
+                    backgroundFlag = false
+                }
             }
+
         }, 10000) //
     }
 
@@ -199,19 +207,17 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
         // 스크롤할 때 리스트의 첫 번째 및 마지막 아이템을 화면 중앙에 정렬 여부
         recyclerView.isEdgeItemsCenteringEnabled = true
 //        recyclerView.isCircularScrollingGestureEnabled = true
-        recyclerView.adapter = MyAdapter(items)
-
-
-        // CurvedTextView 시간 설정
-        val curvedTextClock = findViewById<CurvedTextView>(R.id.curvedTextClock)
-        val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-
-        curvedTextClock.setOnClickListener {
+        recyclerView.adapter = MyAdapter(items) {
             showLoading(true);
             Handler(Looper.getMainLooper()).postDelayed({
                 showLoading(false)
             }, 3000)
         }
+
+        // CurvedTextView 시간 설정
+        val curvedTextClock = findViewById<CurvedTextView>(R.id.curvedTextClock)
+        val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+
         // 시간 업데이트
         val timer = Timer()
         timer.scheduleAtFixedRate(object : TimerTask() {
@@ -234,7 +240,7 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
         }
     }
 
-    private var gifNum = 1
+    private var gifNum = Random.nextInt(1, 6)
     private fun showLoading(flag: Boolean) {
         val gifImage = when (gifNum) {
             1 -> R.drawable.rabbit;

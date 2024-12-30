@@ -9,7 +9,8 @@ import com.example.home_project.R
 import com.example.home_project.parcel.busParcel
 
 
-class MyAdapter(private val items: List<busParcel>) : RecyclerView.Adapter<MyAdapter.ViewHolder>() {
+class MyAdapter(private val items: List<busParcel>, private val onItemClick: (String) -> Unit) :
+    RecyclerView.Adapter<MyAdapter.ViewHolder>() {
 
     // ViewHolder: 아이템 뷰를 재활용하기 위한 클래스
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -42,6 +43,10 @@ class MyAdapter(private val items: List<busParcel>) : RecyclerView.Adapter<MyAda
             imageVal,
             0
         )
+
+        holder.direction.setOnClickListener {
+            onItemClick(direction)
+        }
 
     }
 
