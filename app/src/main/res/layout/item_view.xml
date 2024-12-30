@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:layout_marginBottom="15dp">
+    android:layout_marginBottom="5dp">
 
     <TextView
         android:id="@+id/direction"
@@ -13,7 +13,9 @@
         android:gravity="center"
         android:text="집으로"
         android:textColor="@android:color/holo_orange_dark"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:drawableRight="@mipmap/ic_noorong_round"
+        android:drawablePadding="8dp" />
 
     <TextView
         android:id="@+id/busStopName"
@@ -42,5 +44,4 @@
         android:text="버스명"
         android:textColor="@android:color/holo_green_dark"
         android:textSize="18sp" />
-
 </LinearLayout>

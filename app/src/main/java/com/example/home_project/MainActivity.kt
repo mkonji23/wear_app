@@ -6,6 +6,7 @@
 
 package com.example.home_project
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.IntentFilter
 import android.icu.text.SimpleDateFormat
@@ -13,7 +14,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageButton
@@ -39,8 +39,9 @@ import java.util.Locale
 import java.util.Timer
 import java.util.TimerTask
 import android.view.MotionEvent
+import android.widget.ImageView
 import android.widget.Toast
-import com.google.android.gms.tasks.Tasks
+import com.bumptech.glide.Glide
 import com.google.android.gms.wearable.MessageClient
 
 class MainActivity : ComponentActivity(), BusStationDataListener {
@@ -51,6 +52,8 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
     private var initTxt = "yet"
     private lateinit var recyclerView: WearableRecyclerView
     private var backgroundFlag = false;
+
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
@@ -69,6 +72,7 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
             intentFilter.addAction("MY_ACTION_TILE")
             intentFilter.addAction("MY_ACTION_WATCH")
             registerReceiver(myRceiver, intentFilter)
+
         } catch (e: Exception) {
             Log.e("MainActivity", "Layout inflate error", e)
         } finally {
@@ -160,7 +164,6 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
             // 백그라운드서비스 여부 확인용
             if (!backgroundFlag) {
                 val toast = Toast.makeText(this, "백그라운드서비스 OFF!\r\n모바일앱 확인!", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.BOTTOM, 0, 0) // 화면 바텅에 표시
                 toast.show()
                 sendOpenAppRequestToMobile()
             } else {
@@ -196,6 +199,7 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
 //        recyclerView.isCircularScrollingGestureEnabled = true
         recyclerView.adapter = MyAdapter(items)
 
+
         // CurvedTextView 시간 설정
         val curvedTextClock = findViewById<CurvedTextView>(R.id.curvedTextClock)
         val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
@@ -224,10 +228,15 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
 
     private fun showLoading(flag: Boolean) {
         val loadingOverlay: FrameLayout = findViewById<FrameLayout>(R.id.loadingOverlay)
+        val rabbitGif = findViewById<ImageView>(R.id.loadingImage)
         if (flag) {
             loadingOverlay.visibility = View.VISIBLE
+            Glide.with(rabbitGif.context)
+                .load(R.drawable.norong3) // GIF 파일
+                .into(rabbitGif)
         } else {
             loadingOverlay.visibility = View.GONE
+            Glide.with(rabbitGif.context).clear(rabbitGif)
         }
     }
 

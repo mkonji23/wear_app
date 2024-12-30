@@ -32,8 +32,17 @@ class MyAdapter(private val items: List<busParcel>) : RecyclerView.Adapter<MyAda
         holder.busName.text = item.busNm
         holder.busStopName.text = item.stationNm
         holder.busArrivalTime.text = item.arrivalTime
-        val direction =  if (item.stationNm == "경성고교입구") "집" else "학원"
+        val direction = if (item.stationNm == "경성고교입구") "집" else "학원"
         holder.direction.text = direction
+        val imageVal =
+            if (item.stationNm == "경성고교입구") R.mipmap.ic_noorong_round else R.mipmap.ic_noorong2_round
+        holder.direction.setCompoundDrawablesWithIntrinsicBounds(
+            0,
+            0,
+            imageVal,
+            0
+        )
+
     }
 
     override fun getItemCount(): Int = items.size

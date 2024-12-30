@@ -75,4 +75,5 @@ dependencies {
     implementation("androidx.wear.tiles:tiles:1.1.0")
     implementation("androidx.wear.tiles:tiles-material:1.1.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("com.github.bumptech.glide:glide:4.15.1")
 }

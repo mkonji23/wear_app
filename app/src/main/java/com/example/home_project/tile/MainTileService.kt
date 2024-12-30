@@ -130,7 +130,7 @@ class MainTileService : SuspendingTileService(), BusStationDataListener {
         return TileBuilders.Tile.Builder()
             .setResourcesVersion(RESOURCES_VERSION.toString())  // 고유 버전 생성
             .setTileTimeline(multiTileTimeline)
-            .setFreshnessIntervalMillis(900_000) // 15분마다 갱신
+            .setFreshnessIntervalMillis(900_000) // 15분 마다 갱신
             .build()
     }
 
