@@ -107,6 +107,7 @@ class MainTileService : SuspendingTileService(), BusStationDataListener {
         dataSender.requestData();
     }
 
+
     // 타일 업데이트 이벤트
     fun updateTile() {
         RESOURCES_VERSION++

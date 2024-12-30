@@ -115,7 +115,9 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
 
     @SuppressLint("SetTextI18n")
     override fun onBusStationDataReceived(jsonObject: JsonObject) {
-        showLoading(false)
+        Handler(Looper.getMainLooper()).postDelayed({
+            showLoading(false)
+        }, 1000)
         Log.d("DataRevice", jsonObject.toString())
         val firstStation = jsonObject["firstStation"]?.asJsonObject;
         val secondStation = jsonObject["secondStation"]?.asJsonObject;
@@ -226,18 +228,34 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
         }
     }
 
+    private var gifNum = 1
     private fun showLoading(flag: Boolean) {
+        val gifImage = when (gifNum) {
+            1 -> R.drawable.norong1;
+            2 -> R.drawable.norong2;
+            3 -> R.drawable.norong3;
+            4 -> R.drawable.norong4;
+            5 -> R.drawable.rabbit;
+            else -> R.drawable.norong3;
+        }// 그 외의 값 처리
+
         val loadingOverlay: FrameLayout = findViewById<FrameLayout>(R.id.loadingOverlay)
         val rabbitGif = findViewById<ImageView>(R.id.loadingImage)
         if (flag) {
             loadingOverlay.visibility = View.VISIBLE
             Glide.with(rabbitGif.context)
-                .load(R.drawable.norong3) // GIF 파일
+                .load(gifImage) // GIF 파일
                 .into(rabbitGif)
         } else {
             loadingOverlay.visibility = View.GONE
             Glide.with(rabbitGif.context).clear(rabbitGif)
+            // 이미지 교체
+            if (gifNum == 5) gifNum = 1 else gifNum++;
         }
+    }
+
+    private fun getImage() {
+
     }
 
     // 시간 체크
