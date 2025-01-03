@@ -71,7 +71,7 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
             val intentFilter = IntentFilter()
             intentFilter.addAction("MY_ACTION_TILE")
             intentFilter.addAction("MY_ACTION_WATCH")
-            registerReceiver(myRceiver, intentFilter)
+            registerReceiver(myRceiver, intentFilter, RECEIVER_NOT_EXPORTED)
 
         } catch (e: Exception) {
             Log.e("MainActivity", "Layout inflate error", e)
@@ -173,7 +173,7 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
                     val toast =
                         Toast.makeText(this, "백그라운드서비스 OFF!\r\n모바일앱 확인!", Toast.LENGTH_SHORT)
                     toast.show()
-                    sendOpenAppRequestToMobile()
+//                    sendOpenAppRequestToMobile()
                 } else {
                     backgroundFlag = false
                 }
@@ -220,7 +220,7 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
 
         // 시간 업데이트
         val timer = Timer()
-        timer.scheduleAtFixedRate(object : TimerTask() {
+        timer.schedule(object : TimerTask() {
             override fun run() {
                 runOnUiThread {
                     curvedTextClock.text = dateFormat.format(Date())
