@@ -20,9 +20,19 @@ android {
 
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file(project.properties["STORE_FILE"] as String) // Keystore 경로
+            storePassword = project.properties["STORE_PASSWORD"] as String // Keystore 비밀번호
+            keyAlias = project.properties["KEY_ALIAS"] as String // 키 별칭
+            keyPassword = project.properties["KEY_PASSWORD"] as String // 키 비밀번호
+        }
+    }
+
     buildTypes {
         release {
-            isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -30,11 +40,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
