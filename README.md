@@ -10,3 +10,5 @@
 
 - build 명령어
   `` ./gradlew assembleRelease``
+- build apk 파일 경로
+  C:/app/wearApp
