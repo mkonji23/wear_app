@@ -157,6 +157,7 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
         if (isTimeBetween9AMAnd2PM()) {
             busData = busParcel(rtNm ?: "", stNm2 ?: "", arrmsg1_2 ?: "");
         }
+        // 타일로 데이터 전송
         broadSender.sendBroadcastRequest(this, "MY_ACTION_TILE", busData);
     }
 

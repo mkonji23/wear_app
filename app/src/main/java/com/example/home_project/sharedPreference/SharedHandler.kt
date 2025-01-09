@@ -7,14 +7,16 @@ import com.google.gson.Gson
 
 class SharedHandler(private val context: Context) {
     fun setTileData(data: busParcel) {
-        val prefs: SharedPreferences = context.getSharedPreferences("TileData", Context.MODE_PRIVATE)
+        val prefs: SharedPreferences =
+            context.getSharedPreferences("TileData", Context.MODE_PRIVATE)
         val gson = Gson()
         val jsonData = gson.toJson(data)
-        prefs.edit().putString("data",jsonData).apply()
+        prefs.edit().putString("data", jsonData).apply()
     }
 
     fun getTileData(): String {
-        val prefs: SharedPreferences = context.getSharedPreferences("TileData", Context.MODE_PRIVATE)
-        return prefs.getString("data", null) ?: "정보 없음"
+        val prefs: SharedPreferences =
+            context.getSharedPreferences("TileData", Context.MODE_PRIVATE)
+        return prefs.getString("data", null) ?: "noData"
     }
 }
