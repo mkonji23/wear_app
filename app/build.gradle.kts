@@ -7,17 +7,45 @@ plugins {
 android {
     namespace = "com.example.home_project"
     compileSdk = 34
-
+    // flavorDimensions 정의
+//    flavorDimensions("tier")
+//    productFlavors {
+//        create("free") {
+//            dimension = "tier"
+//            applicationIdSuffix = ".free"
+//        }
+//        create("paid") {
+//            dimension = "tier"
+//            applicationIdSuffix = ".paid"
+//        }
+//    }
     defaultConfig {
         applicationId = "com.example.home_project"
         minSdk = 30
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = "2.0"
         vectorDrawables {
             useSupportLibrary = true
         }
 
+    }
+
+
+    applicationVariants.all {
+        this.outputs
+            .map { it as com.android.build.gradle.internal.api.ApkVariantOutputImpl }
+            .forEach { output ->
+                println("flavorName=${this.flavorName} buildTypeName= ${this.buildType.name}")
+                val variant = this.buildType.name
+                var apkName =
+                    "watch_app_" + this.versionName
+                if (variant.isNotEmpty()) apkName += "_$variant"
+                apkName += ".apk"
+                println("ApkName=$apkName ${this.buildType.name}")
+
+                output.outputFileName = apkName
+            }
     }
 
     signingConfigs {
@@ -33,6 +61,7 @@ android {
         release {
             signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -56,6 +85,29 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+}
+
+// 빌드 후 APK 파일 복사
+tasks.register<Copy>("moveApk") {
+    val buildType = "release" // "release"로 변경 가능
+    val sourceApkDir = file("$buildDir/outputs/apk/$buildType/")
+    val destinationDir = file("C:/apk/wearApp/$buildType/")
+
+    from(sourceApkDir)
+    into(destinationDir)
+
+    println("destinationDir:$destinationDir")
+    // 디렉토리 생성 및 파일 복사 설정
+    doFirst {
+        destinationDir.mkdirs()
+    }
+}
+
+// 빌드 후 moveApk Task를 실행하도록 설정
+afterEvaluate {
+    tasks.named("assembleRelease") {
+        finalizedBy("moveApk")
     }
 }
 
