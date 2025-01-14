@@ -92,7 +92,7 @@ android {
 tasks.register<Copy>("moveApk") {
     val buildType = "release" // "release"로 변경 가능
     val sourceApkDir = file("$buildDir/outputs/apk/$buildType/")
-    val destinationDir = file("C:/apk/wearApp/$buildType/")
+    val destinationDir = file("C:/apk/$buildType/")
 
     from(sourceApkDir)
     into(destinationDir)

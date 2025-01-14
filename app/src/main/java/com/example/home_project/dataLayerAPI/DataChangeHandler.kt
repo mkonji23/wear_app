@@ -51,16 +51,20 @@ class DataChangeHandler(private val context: Context) : DataClient.OnDataChanged
 
     private fun handleBusStationData(item: DataItem) {
         val dataMap = DataMapItem.fromDataItem(item).dataMap
+        val dataType = dataMap.getString("type", "wear")
         val jsonString = dataMap.getString("arguments", "")
         val jsonObject: JsonObject = JsonParser.parseString(jsonString).asJsonObject
         Log.d("DataChangeHandler", "Bus station Time: ${dataMap.getString(DataConstant.WEAR_KEY)}")
         Log.d("DataChangeHandler", "Bus station updated: $jsonString")
 
-        // 백그라운드서비스 체크
-        listener?.onBackServiceFlag(true);
-        // 데이터 전달
-        listener?.onBusStationDataReceived(jsonObject)
-        // 타일에 전달
-        listenerTile?.onBusStationDataReceived(jsonObject)
+        if (dataType == "wear") {
+            // 백그라운드서비스 체크
+            listener?.onBackServiceFlag(true);
+            // 앱에 데이터 전달
+            listener?.onBusStationDataReceived(jsonObject)
+        } else {
+            // 타일에 전달
+            listenerTile?.onBusStationDataReceived(jsonObject)
+        }
     }
 }

@@ -12,7 +12,6 @@ import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.PutDataRequest
 import com.google.android.gms.wearable.Wearable
 import java.text.SimpleDateFormat
-import kotlin.random.Random
 
 // 안드로이드 모바일 앱으로 데이터 보내는 부분
 class DataSenderToApp(context: Context) {
@@ -22,14 +21,23 @@ class DataSenderToApp(context: Context) {
         this.listener = listener
     }
 
+    /**
+     * 모바일 앱으로 데이터 조회 요청
+     *
+     * type: wear | tile
+     *
+     *  wear 웨어앱에서 요청, tile 타일서비스에서 요청
+     *
+     */
     @SuppressLint("SimpleDateFormat")
-    fun requestData() {
+    fun requestData(type: String = "wear") {
         val sendTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis())
         val putDataReq: PutDataRequest = PutDataMapRequest.create("/getStationInfo").run {
             dataMap.putString(
                 DataConstant.WEAR_KEY,
                 sendTime
             )
+            dataMap.putString("type", type)
             asPutDataRequest()
         }
         Log.d("DataSenderToApp", sendTime)

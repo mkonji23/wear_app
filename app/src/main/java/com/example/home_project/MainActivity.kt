@@ -49,7 +49,7 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
     private lateinit var dataSender: DataSenderToApp
     private var broadSender: BroadCastSender = BroadCastSender()
     private val myRceiver = MyReceiverMain()
-    private var initTxt = "yet"
+    private var loadingFlag = false
     private lateinit var recyclerView: WearableRecyclerView
     private var backgroundFlag = false;
 
@@ -127,8 +127,6 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
         val stNm2 = secondStation?.get("stNm")?.asString ?: ""
         val arrmsg1_2 = secondStation?.get("arrmsg1")?.asString ?: ""
 
-        // 초기화 성공여부 체크
-        initTxt = rtNm
 
         val homeParcel = busParcel(rtNm, stNm1, arrmsg1)
         val companyParcel = busParcel(rtNm, stNm2, arrmsg1_2)
@@ -163,22 +161,9 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
     // 데이터 세팅 하고 딜레이
     override fun onBusStationDataSend() {
         Handler(Looper.getMainLooper()).postDelayed({
-            showLoading(false)
-            if (initTxt === "yet") {
-                reqData();
-                initTxt = "send1"
-            } else {
-                // 백그라운드서비스 여부 확인용
-                if (!backgroundFlag) {
-                    val toast =
-                        Toast.makeText(this, "백그라운드서비스 OFF!\r\n모바일앱 확인!", Toast.LENGTH_SHORT)
-                    toast.show()
-//                    sendOpenAppRequestToMobile()
-                } else {
-                    backgroundFlag = false
-                }
+            if (loadingFlag) {
+                showLoading(false)
             }
-
         }, 10000) //
     }
 
@@ -264,6 +249,8 @@ class MainActivity : ComponentActivity(), BusStationDataListener {
             // 이미지 교체
             if (gifNum == 5) gifNum = 1 else gifNum++;
         }
+
+        loadingFlag = flag
     }
 
     // 시간 체크

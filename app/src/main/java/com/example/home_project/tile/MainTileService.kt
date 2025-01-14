@@ -2,7 +2,9 @@ package com.example.home_project.tile
 
 import android.content.Context
 import android.content.IntentFilter
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Devices
@@ -68,13 +70,14 @@ class MainTileService : SuspendingTileService(), BusStationDataListener {
         Wearable.getDataClient(this).removeListener(dataChangeHandler)
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onTileAddEvent(requestParams: EventBuilders.TileAddEvent) {
         super.onTileAddEvent(requestParams)
         // 동적으로 BroadcastReceiver 등록
         val intentFilter = IntentFilter()
         intentFilter.addAction("MY_ACTION_TILE")
         intentFilter.addAction("MY_ACTION_WATCH")
-        registerReceiver(myRceiver, intentFilter)
+        registerReceiver(myRceiver, intentFilter, RECEIVER_NOT_EXPORTED)
         Log.d("MainTileService", "Receiver registered")
 
     }
