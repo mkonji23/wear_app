@@ -189,7 +189,11 @@ private fun tileLayout(
     context: Context,
     updateData: String = ""
 ): LayoutElementBuilders.LayoutElement {
-    val myData = Gson().fromJson(updateData, busParcel::class.java)
+    var myData = busParcel("마포06", "조회실패", "집에못간다구링");
+    if (updateData != "noData") {
+        myData = Gson().fromJson(updateData, busParcel::class.java)
+    }
+
     val busStopName = Text.Builder(context, myData.stationNm)
         .setColor(argb(Colors.DEFAULT.onSurface))
         .setTypography(Typography.TYPOGRAPHY_BODY1)

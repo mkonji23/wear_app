@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.home_project">
 
     <uses-feature android:name="android.hardware.type.watch" />
@@ -21,10 +20,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault">
-        <receiver
-            android:name=".MyReceiversssss"
-            android:enabled="true"
-            android:exported="true"></receiver>
         <!-- 워치앱 메타데이터 설정 -->
         <meta-data
             android:name="com.google.android.wearable.api.metadata.WATCHFACE"
