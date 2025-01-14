@@ -107,7 +107,7 @@ class MainTileService : SuspendingTileService(), BusStationDataListener {
     override fun onTileEnterEvent(requestParams: EventBuilders.TileEnterEvent) {
         super.onTileEnterEvent(requestParams)
         // 타일 갱신이 필요한 경우 -  타일 -> 모바일 앱으로 요청
-        dataSender.requestData();
+        dataSender.requestData("tile");
     }
 
 
