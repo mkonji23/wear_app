@@ -1,6 +1,6 @@
-package com.example.home_project.api
+package com.example.home_project.shared.api
 
-import com.example.home_project.contant.DataConstant
+import com.example.home_project.shared.contant.DataConstant
 
 class ServerLessService {
     fun getStationTimeByIds(arsId1: String, arsId2: String, callback: ApiCallback) {

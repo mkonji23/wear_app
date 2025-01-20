@@ -1,19 +1,14 @@
-package com.example.home_project.broadcast
+package com.example.home_project.shared.broadcast
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
-import android.service.quicksettings.TileService
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.wear.tiles.TileService.getUpdater
-import com.example.home_project.MainActivity
-import com.example.home_project.parcel.busParcel
-import com.example.home_project.sharedPreference.SharedHandler
-import com.example.home_project.tile.MainTileService
+import com.example.home_project.presentation.MainActivity
+import com.example.home_project.shared.parcel.busParcel
+import com.example.home_project.shared.sharedPreference.SharedHandler
 
 class MyReceiverMain : BroadcastReceiver() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)

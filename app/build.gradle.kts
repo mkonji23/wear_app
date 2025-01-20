@@ -123,7 +123,7 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("com.google.android.horologist:horologist-compose-tools:0.4.8")
     implementation("com.google.android.horologist:horologist-tiles:0.4.8")
-    implementation("androidx.wear.watchface:watchface-complications-data-source-ktx:1.1.1")
+    implementation("androidx.wear.watchface:watchface:1.2.1")
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
@@ -139,4 +139,11 @@ dependencies {
     implementation("androidx.wear.tiles:tiles-material:1.1.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.github.bumptech.glide:glide:4.15.1")
+    // Use to implement wear watchface complications
+    implementation("androidx.wear.watchface:watchface-complications-data-source:1.2.1")
+    implementation("androidx.wear.watchface:watchface-complications-data-source-ktx:1.2.1")
+    implementation("androidx.wear.watchface:watchface:1.2.1")
+    implementation("androidx.wear.watchface:watchface-editor:1.2.1")
+    implementation("androidx.wear.watchface:watchface-complications-rendering:1.2.1")
+    implementation("androidx.wear.watchface:watchface-complications:1.2.1")
 }

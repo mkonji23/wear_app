@@ -1,8 +1,8 @@
-package com.example.home_project.sharedPreference
+package com.example.home_project.shared.sharedPreference
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.example.home_project.parcel.busParcel
+import com.example.home_project.shared.parcel.busParcel
 import com.google.gson.Gson
 
 class SharedHandler(private val context: Context) {

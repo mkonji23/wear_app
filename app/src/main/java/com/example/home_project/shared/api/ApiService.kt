@@ -1,6 +1,6 @@
-package com.example.home_project.api
+package com.example.home_project.shared.api
 
-import com.example.home_project.contant.DataConstant
+import com.example.home_project.shared.contant.DataConstant
 import com.google.gson.Gson
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType

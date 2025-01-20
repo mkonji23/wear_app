@@ -1,4 +1,4 @@
-package com.example.home_project.view
+package com.example.home_project.shared.view
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.home_project.R
-import com.example.home_project.parcel.busParcel
+import com.example.home_project.shared.parcel.busParcel
 
 
 class MyAdapter(private val items: List<busParcel>, private val onItemClick: (String) -> Unit) :

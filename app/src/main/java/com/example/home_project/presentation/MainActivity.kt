@@ -4,7 +4,7 @@
  * changes to the libraries and their usages.
  */
 
-package com.example.home_project
+package com.example.home_project.presentation
 
 import android.annotation.SuppressLint
 import android.content.IntentFilter
@@ -25,13 +25,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.wear.widget.CurvedTextView
 import androidx.wear.widget.WearableRecyclerView
 import com.bumptech.glide.Glide
-import com.example.home_project.DataInterface.BusStationDataListener
-import com.example.home_project.broadcast.MyReceiverMain
-import com.example.home_project.broadcast.sender.BroadCastSender
-import com.example.home_project.dataLayerAPI.DataChangeHandler
-import com.example.home_project.dataLayerAPI.DataSenderToApp
-import com.example.home_project.parcel.busParcel
-import com.example.home_project.view.MyAdapter
+import com.example.home_project.R
+import com.example.home_project.shared.DataInterface.BusStationDataListener
+import com.example.home_project.shared.broadcast.MyReceiverMain
+import com.example.home_project.shared.broadcast.sender.BroadCastSender
+import com.example.home_project.shared.dataLayerAPI.DataChangeHandler
+import com.example.home_project.shared.dataLayerAPI.DataSenderToApp
+import com.example.home_project.shared.parcel.busParcel
+import com.example.home_project.shared.view.MyAdapter
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.Wearable
 import com.google.gson.JsonObject

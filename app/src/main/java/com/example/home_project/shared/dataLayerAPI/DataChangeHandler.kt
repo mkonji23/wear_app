@@ -1,10 +1,10 @@
-package com.example.home_project.dataLayerAPI
+package com.example.home_project.shared.dataLayerAPI
 
 import android.content.Context
 import android.util.Log
-import com.example.home_project.DataInterface.BusStationDataListener
-import com.example.home_project.MainActivity
-import com.example.home_project.contant.DataConstant
+import com.example.home_project.presentation.MainActivity
+import com.example.home_project.shared.DataInterface.BusStationDataListener
+import com.example.home_project.shared.contant.DataConstant
 import com.example.home_project.tile.MainTileService
 import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.DataEvent

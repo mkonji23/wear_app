@@ -1,4 +1,4 @@
-package com.example.home_project.DataInterface
+package com.example.home_project.shared.DataInterface
 
 import com.google.gson.JsonObject
 

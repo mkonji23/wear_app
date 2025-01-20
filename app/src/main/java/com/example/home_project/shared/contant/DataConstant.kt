@@ -1,4 +1,4 @@
-package com.example.home_project.contant
+package com.example.home_project.shared.contant
 
 class DataConstant {
     companion object {

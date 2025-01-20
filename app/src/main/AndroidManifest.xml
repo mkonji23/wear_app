@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.BIND_COMPLICATION_PROVIDER" />
 
     <application
         android:allowBackup="true"
@@ -25,7 +26,7 @@
             android:name="com.google.android.wearable.api.metadata.WATCHFACE"
             android:resource="@mipmap/ic_launcher_foreground" /> <!-- 워치앱 아이콘 설정 -->
         <receiver
-            android:name=".broadcast.MyReceiver"
+            android:name="com.example.home_project.shared.broadcast.MyReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -34,7 +35,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".broadcast.MyReceiverMain"
+            android:name="com.example.home_project.shared.broadcast.MyReceiverMain"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -58,6 +59,37 @@
                 android:resource="@drawable/tile_preview_main" />
         </service>
 
+        <service
+            android:name="com.example.home_project.watchface.complication.MainComplicationService"
+            android:exported="true"
+            android:permission="android.permission.BIND_COMPLICATION_PROVIDER">
+            <intent-filter>
+                <action android:name="androidx.wear.watchface.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
+            </intent-filter>
+
+            <meta-data
+                android:name="androidx.wear.watchface.complications.SUPPORTED_TYPES"
+                android:value="SHORT_TEXT" />
+            <meta-data
+                android:name="androidx.wear.watchface.complications.UPDATE_PERIOD_SECONDS"
+                android:value="3600" /> <!-- 1시간마다 업데이트 -->
+        </service>
+
+        <!-- MyWatchFaceService 등록 -->
+        <service
+            android:name=".watchface.complication.MainComplicationService"
+            android:exported="true"
+            android:permission="android.permission.BIND_WATCHFACE">
+            <intent-filter>
+                <action android:name="android.service.watchface.WatchFaceService" />
+            </intent-filter>
+
+            <!-- metadata tag for WatchFace -->
+            <meta-data
+                android:name="android.service.watchface"
+                android:resource="@xml/watchface_config" />
+        </service>
+
         <uses-library
             android:name="com.google.android.wearable"
             android:required="true" />
@@ -70,7 +102,7 @@
             android:value="true" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:taskAffinity=""
